@@ -13,8 +13,9 @@ projectsveltos` to see the charts.
 
 To install the projectsveltos chart:
 
-    helm install projectsveltos projectsveltos/projectsveltos
+    kubectl create namespace projectsveltos
+    helm install projectsveltos projectsveltos/projectsveltos -n projectsveltos
 
 To uninstall the chart:
 
-    helm delete my-projectsveltos
+    helm delete projectsveltos
