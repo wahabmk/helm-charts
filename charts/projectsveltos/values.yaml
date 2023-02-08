@@ -13,7 +13,7 @@ accessManager:
   manager:
     image:
       repository: gianlucam76/access-manager-amd64
-      tag: v0.4.0
+      tag: v0.4.1
     resources:
       limits:
         cpu: 500m
@@ -55,7 +55,7 @@ classifierManager:
   manager:
     image:
       repository: gianlucam76/classifier-amd64
-      tag: v0.4.0
+      tag: v0.4.1
     resources:
       limits:
         cpu: 500m
@@ -97,7 +97,7 @@ fmControllerManager:
   manager:
     image:
       repository: gianlucam76/sveltos-manager-amd64
-      tag: v0.4.0
+      tag: v0.4.1
     resources:
       limits:
         cpu: 500m
@@ -140,7 +140,7 @@ manager:
   manager:
     image:
       repository: gianlucam76/sveltoscluster-manager-amd64
-      tag: v0.4.0
+      tag: v0.4.1
     resources:
       limits:
         cpu: 500m
