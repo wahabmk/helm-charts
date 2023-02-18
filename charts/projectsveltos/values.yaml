@@ -13,7 +13,7 @@ accessManager:
   manager:
     image:
       repository: gianlucam76/access-manager-amd64
-      tag: v0.4.1
+      tag: v0.5.0
     resources:
       limits:
         cpu: 500m
@@ -55,7 +55,7 @@ classifierManager:
   manager:
     image:
       repository: gianlucam76/classifier-amd64
-      tag: v0.4.1
+      tag: v0.5.0
     resources:
       limits:
         cpu: 500m
@@ -97,7 +97,7 @@ fmControllerManager:
   manager:
     image:
       repository: gianlucam76/sveltos-manager-amd64
-      tag: v0.4.1
+      tag: v0.5.0
     resources:
       limits:
         cpu: 500m
@@ -139,8 +139,8 @@ manager:
         memory: 64Mi
   manager:
     image:
-      repository: gianlucam76/sveltoscluster-manager-amd64
-      tag: v0.4.1
+      repository: gianlucam76/healthcheck-manager-amd64
+      tag: v0.5.0
     resources:
       limits:
         cpu: 500m
@@ -155,12 +155,54 @@ managerConfig:
       healthProbeBindAddress: :8081
     leaderElection:
       leaderElect: true
-      resourceName: 03b9220a.projectsveltos.io
+      resourceName: 7964f530.projectsveltos.io
     metrics:
       bindAddress: 127.0.0.1:8080
     webhook:
       port: 9443
 managerMetricsService:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  type: ClusterIP
+scManager:
+  kubeRbacProxy:
+    image:
+      repository: gcr.io/kubebuilder/kube-rbac-proxy
+      tag: v0.12.0
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 5m
+        memory: 64Mi
+  manager:
+    image:
+      repository: gianlucam76/sveltoscluster-manager-amd64
+      tag: v0.5.0
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+  replicas: 1
+scManagerConfig:
+  controllerManagerConfigYaml:
+    health:
+      healthProbeBindAddress: :8081
+    leaderElection:
+      leaderElect: true
+      resourceName: 03b9220a.projectsveltos.io
+    metrics:
+      bindAddress: 127.0.0.1:8080
+    webhook:
+      port: 9443
+scManagerMetricsService:
   ports:
   - name: https
     port: 8443
