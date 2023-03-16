@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: classifierreports.lib.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
+    controller-gen.kubebuilder.io/version: v0.10.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
@@ -33,7 +33,6 @@ spec:
           metadata:
             type: object
           spec:
-            description: ClassifierReportSpec defines the desired state of ClassifierReport
             properties:
               classifierName:
                 description: ClassifierName is the name of the Classifier instance this

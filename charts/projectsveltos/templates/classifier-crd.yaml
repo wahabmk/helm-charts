@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: classifiers.lib.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
+    controller-gen.kubebuilder.io/version: v0.10.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
@@ -201,6 +201,7 @@ spec:
                           description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                           type: string
                       type: object
+                      x-kubernetes-map-type: atomic
                     failureMessage:
                       description: FailureMessage provides more information about the
                         error.
@@ -266,6 +267,7 @@ spec:
                           description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                           type: string
                       type: object
+                      x-kubernetes-map-type: atomic
                     managedLabels:
                       description: ManagedLabels indicates the labels being managed
                         on the cluster by this Classifier instance

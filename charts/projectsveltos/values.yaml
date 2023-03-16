@@ -13,7 +13,7 @@ accessManager:
   manager:
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.6.0
+      tag: v0.7.1
     resources:
       limits:
         cpu: 500m
@@ -40,7 +40,7 @@ accessManagerMetricsService:
     protocol: TCP
     targetPort: https
   type: ClusterIP
-classifierManager:
+eventManager:
   kubeRbacProxy:
     image:
       repository: gcr.io/kubebuilder/kube-rbac-proxy
@@ -54,28 +54,28 @@ classifierManager:
         memory: 64Mi
   manager:
     image:
-      repository: projectsveltos/classifier-amd64
-      tag: v0.6.0
+      repository: projectsveltos/event-manager-amd64
+      tag: v0.7.1
     resources:
       limits:
         cpu: 500m
         memory: 128Mi
       requests:
-        cpu: 500m
-        memory: 128Mi
+        cpu: 10m
+        memory: 64Mi
   replicas: 1
-classifierManagerConfig:
+eventManagerConfig:
   controllerManagerConfigYaml:
     health:
       healthProbeBindAddress: :8081
     leaderElection:
       leaderElect: true
-      resourceName: 1aea9208.projectsveltos.io
+      resourceName: bfaea346.projectsveltos.io
     metrics:
       bindAddress: 127.0.0.1:8080
     webhook:
       port: 9443
-classifierManagerMetricsService:
+eventManagerMetricsService:
   ports:
   - name: https
     port: 8443
@@ -97,7 +97,7 @@ fmControllerManager:
   manager:
     image:
       repository: projectsveltos/sveltos-manager-amd64
-      tag: v0.6.0
+      tag: v0.7.1
     resources:
       limits:
         cpu: 500m
@@ -124,6 +124,48 @@ fmManagerMetricsService:
     protocol: TCP
     targetPort: https
   type: ClusterIP
+hcManager:
+  kubeRbacProxy:
+    image:
+      repository: gcr.io/kubebuilder/kube-rbac-proxy
+      tag: v0.12.0
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 5m
+        memory: 64Mi
+  manager:
+    image:
+      repository: projectsveltos/healthcheck-manager-amd64
+      tag: v0.7.1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 10m
+        memory: 64Mi
+  replicas: 1
+hcManagerConfig:
+  controllerManagerConfigYaml:
+    health:
+      healthProbeBindAddress: :8081
+    leaderElection:
+      leaderElect: true
+      resourceName: 7964f530.projectsveltos.io
+    metrics:
+      bindAddress: 127.0.0.1:8080
+    webhook:
+      port: 9443
+hcManagerMetricsService:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  type: ClusterIP
 kubernetesClusterDomain: cluster.local
 manager:
   kubeRbacProxy:
@@ -139,15 +181,15 @@ manager:
         memory: 64Mi
   manager:
     image:
-      repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.6.0
+      repository: projectsveltos/classifier-amd64
+      tag: v0.7.1
     resources:
       limits:
         cpu: 500m
         memory: 128Mi
       requests:
-        cpu: 10m
-        memory: 64Mi
+        cpu: 500m
+        memory: 128Mi
   replicas: 1
 managerConfig:
   controllerManagerConfigYaml:
@@ -155,7 +197,7 @@ managerConfig:
       healthProbeBindAddress: :8081
     leaderElection:
       leaderElect: true
-      resourceName: 7964f530.projectsveltos.io
+      resourceName: 1aea9208.projectsveltos.io
     metrics:
       bindAddress: 127.0.0.1:8080
     webhook:
@@ -182,7 +224,7 @@ scManager:
   manager:
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.6.0
+      tag: v0.7.1
     resources:
       limits:
         cpu: 500m

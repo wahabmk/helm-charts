@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: accessrequests.lib.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
+    controller-gen.kubebuilder.io/version: v0.10.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
@@ -62,7 +62,7 @@ spec:
               type:
                 description: Type represent the type of the request
                 enum:
-                - ClassifierAgent
+                - SveltosAgent
                 - Different
                 type: string
             required:
@@ -113,6 +113,7 @@ spec:
                     description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
                     type: string
                 type: object
+                x-kubernetes-map-type: atomic
             type: object
         type: object
     served: true

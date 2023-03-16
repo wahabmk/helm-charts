@@ -1,10 +1,18 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-role
+  name: {{ include "projectsveltos.fullname" . }}-event-manager-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
 - apiGroups:
   - ""
   resources:
@@ -28,7 +36,6 @@ rules:
   verbs:
   - get
   - list
-  - update
   - watch
 - apiGroups:
   - cluster.x-k8s.io
@@ -55,21 +62,9 @@ rules:
   - list
   - watch
 - apiGroups:
-  - lib.projectsveltos.io
+  - config.projectsveltos.io
   resources:
-  - accessrequests
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifierreports
+  - clusterprofiles
   verbs:
   - create
   - delete
@@ -77,36 +72,55 @@ rules:
   - list
   - update
   - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifiers
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifiers/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifiers/status
-  verbs:
-  - get
-  - patch
-  - update
 - apiGroups:
   - lib.projectsveltos.io
   resources:
   - debuggingconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventbasedaddons
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventbasedaddons/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventbasedaddons/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventreports
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventsources
   verbs:
   - get
   - list
@@ -132,14 +146,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-rolebinding
+  name: {{ include "projectsveltos.fullname" . }}-event-manager-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-classifier-manager-role'
+  name: '{{ include "projectsveltos.fullname" . }}-event-manager-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-classifier-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-event-manager'
   namespace: '{{ .Release.Namespace }}'

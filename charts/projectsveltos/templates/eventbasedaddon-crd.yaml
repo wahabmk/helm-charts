@@ -1,7 +1,7 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: clusterhealthchecks.lib.projectsveltos.io
+  name: eventbasedaddons.lib.projectsveltos.io
   annotations:
     controller-gen.kubebuilder.io/version: v0.10.0
   labels:
@@ -9,16 +9,16 @@ metadata:
 spec:
   group: lib.projectsveltos.io
   names:
-    kind: ClusterHealthCheck
-    listKind: ClusterHealthCheckList
-    plural: clusterhealthchecks
-    singular: clusterhealthcheck
+    kind: EventBasedAddOn
+    listKind: EventBasedAddOnList
+    plural: eventbasedaddons
+    singular: eventbasedaddon
   scope: Cluster
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ClusterHealthCheck is the Schema for the clusterhealthchecks API
+        description: EventBasedAddOn is the Schema for the eventbasedaddons API
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -33,19 +33,58 @@ spec:
           metadata:
             type: object
           spec:
-            description: ClusterHealthCheckSpec defines the desired state of ClusterHealthCheck
+            description: EventBasedAddOnSpec defines the desired state of EventBasedAddOn
             properties:
               clusterSelector:
                 description: ClusterSelector identifies clusters to associate to.
                 type: string
-              livenessChecks:
-                description: LivenessChecks is a list of source of liveness checks to
-                  evaluate. Anytime one of those changes, notifications will be sent
+              eventSourceName:
+                description: EventSourceName is the name of the referenced EventSource.
+                  Resources contained in the referenced ConfigMaps/Secrets and HelmCharts
+                  will be customized using information from resources matching the EventSource
+                  in the managed cluster.
+                type: string
+              helmCharts:
+                description: Helm charts to be deployed in the matching clusters based
+                  on EventSource.
                 items:
                   properties:
-                    livenessSourceRef:
-                      description: LivenessSourceRef is a reference to a liveness-specific
-                        resource that holds the details for the liveness check.
+                    chartName:
+                      description: ChartName is the chart name
+                      minLength: 1
+                      type: string
+                    chartVersion:
+                      description: ChartVersion is the chart version
+                      minLength: 1
+                      type: string
+                    helmChartAction:
+                      default: Install
+                      description: HelmChartAction is the action that will be taken
+                        on the helm chart
+                      enum:
+                      - Install
+                      - Uninstall
+                      type: string
+                    releaseName:
+                      description: ReleaseName is the chart release
+                      minLength: 1
+                      type: string
+                    releaseNamespace:
+                      description: ReleaseNamespace is the namespace release will be
+                        installed
+                      minLength: 1
+                      type: string
+                    repositoryName:
+                      description: RepositoryName is the name helm chart repository
+                      minLength: 1
+                      type: string
+                    repositoryURL:
+                      description: RepositoryURL is the URL helm chart repository
+                      minLength: 1
+                      type: string
+                    secretRef:
+                      description: SecretRef contains confidential data that needs to
+                        be used as values for templates
                       properties:
                         apiVersion:
                           description: API version of the referent.
@@ -81,231 +120,163 @@ spec:
                           type: string
                       type: object
                       x-kubernetes-map-type: atomic
-                    name:
-                      description: Name of the liveness check. Must be a DNS_LABEL and
-                        unique within the ClusterHealthCheck.
-                      type: string
-                    type:
-                      description: Type specifies the type of liveness
-                      enum:
-                      - Addons
-                      - HealthCheck
+                    values:
+                      description: 'Values holds the values for this Helm release. Go
+                        templating with the values from the referenced CAPI Cluster.
+                        Currently following can be referenced: - Cluster => CAPI Cluster
+                        for instance - KubeadmControlPlane => the CAPI Cluster controlPlaneRef
+                        - InfrastructureProvider => the CAPI cluster infrastructure
+                        provider - SecretRef => store any confindetial information in
+                        a Secret, set SecretRef then reference it'
                       type: string
                   required:
-                  - name
-                  - type
+                  - chartName
+                  - chartVersion
+                  - releaseName
+                  - releaseNamespace
+                  - repositoryName
+                  - repositoryURL
                   type: object
                 type: array
-              notifications:
-                description: Notification is a list of source of events to evaluate.
+              oneForEvent:
+                description: Multiple resources in a managed cluster can be a match
+                  for referenced EventSource. OneForEvent indicates whether a ClusterProfile
+                  for all resource (OneForEvent = false) or one per resource (OneForEvent
+                  = true) needs to be creted.
+                type: boolean
+              policyRefs:
+                description: PolicyRefs references all the ConfigMaps/Secrets containing
+                  kubernetes resources that need to be deployed in the matching clusters
+                  based on EventSource.
                 items:
+                  description: PolicyRef specifies a resource containing one or more
+                    policy to deploy in matching Clusters.
                   properties:
-                    name:
-                      description: Name of the notification check. Must be a DNS_LABEL
-                        and unique within the ClusterHealthCheck.
-                      type: string
-                    notificationRef:
-                      description: NotificationRef is a reference to a notification-specific
-                        resource that holds the details for the notification.
-                      properties:
-                        apiVersion:
-                          description: API version of the referent.
-                          type: string
-                        fieldPath:
-                          description: 'If referring to a piece of an object instead
-                            of an entire object, this string should contain a valid
-                            JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                            For example, if the object reference is to a container within
-                            a pod, this would take on a value like: "spec.containers{name}"
-                            (where "name" refers to the name of the container that triggered
-                            the event) or if no container name is specified "spec.containers[2]"
-                            (container with index 2 in this pod). This syntax is chosen
-                            only to have some well-defined way of referencing a part
-                            of an object. TODO: this design is not final and this field
-                            is subject to change in the future.'
-                          type: string
-                        kind:
-                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                          type: string
-                        name:
-                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                          type: string
-                        namespace:
-                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                          type: string
-                        resourceVersion:
-                          description: 'Specific resourceVersion to which this reference
-                            is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                          type: string
-                        uid:
-                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
-                          type: string
-                      type: object
-                      x-kubernetes-map-type: atomic
-                    type:
-                      description: NotificationType specifies the type of notification
+                    kind:
+                      description: 'Kind of the resource. Supported kinds are: Secrets
+                        and ConfigMaps.'
                       enum:
-                      - KubernetesEvent
-                      - Slack
-                      - Webex
+                      - Secret
+                      - ConfigMap
+                      type: string
+                    name:
+                      description: Name of the rreferenced resource.
+                      minLength: 1
+                      type: string
+                    namespace:
+                      description: Namespace of the referenced resource. Namespace can
+                        be left empty. In such a case, namespace will be implicit set
+                        to cluster's namespace.
                       type: string
                   required:
+                  - kind
                   - name
-                  - type
+                  - namespace
                   type: object
                 type: array
+              stopMatchingBehavior:
+                default: WithdrawPolicies
+                description: StopMatchingBehavior indicates what behavior should be
+                  when a Cluster stop matching the ClusterProfile. By default all deployed
+                  Helm charts and Kubernetes resources will be withdrawn from Cluster.
+                  Setting StopMatchingBehavior to LeavePolicies will instead leave ClusterProfile
+                  deployed policies in the Cluster.
+                type: string
+              syncMode:
+                default: Continuous
+                description: SyncMode specifies how features are synced in a matching
+                  workload cluster. - OneTime means, first time a workload cluster matches
+                  the ClusterProfile, features will be deployed in such cluster. Any
+                  subsequent feature configuration change won't be applied into the
+                  matching workload clusters; - Continuous means first time a workload
+                  cluster matches the ClusterProfile, features will be deployed in such
+                  a cluster. Any subsequent feature configuration change will be applied
+                  into the matching workload clusters. - DryRun means no change will
+                  be propagated to any matching cluster. A report instead will be generated
+                  summarizing what would happen in any matching cluster because of the
+                  changes made to ClusterProfile while in DryRun mode.
+                enum:
+                - OneTime
+                - Continuous
+                - ContinuousWithDriftDetection
+                - DryRun
+                type: string
             required:
             - clusterSelector
-            - livenessChecks
-            - notifications
+            - eventSourceName
             type: object
           status:
+            description: EventBasedAddOnStatus defines the observed state of EventBasedAddOn
             properties:
-              clusterCondition:
-                description: ClusterConditions contains conditions and notification
-                  status for all clusters matching ClusterHealthCheck instance
+              clusterInfo:
+                description: ClusterInfo represent the deployment status in each managed
+                  cluster
                 items:
                   properties:
-                    clusterInfo:
+                    cluster:
+                      description: Cluster references the Cluster
                       properties:
-                        cluster:
-                          description: Cluster references the Cluster
-                          properties:
-                            apiVersion:
-                              description: API version of the referent.
-                              type: string
-                            fieldPath:
-                              description: 'If referring to a piece of an object instead
-                                of an entire object, this string should contain a valid
-                                JSON/Go field access statement, such as desiredState.manifest.containers[2].
-                                For example, if the object reference is to a container
-                                within a pod, this would take on a value like: "spec.containers{name}"
-                                (where "name" refers to the name of the container that
-                                triggered the event) or if no container name is specified
-                                "spec.containers[2]" (container with index 2 in this
-                                pod). This syntax is chosen only to have some well-defined
-                                way of referencing a part of an object. TODO: this design
-                                is not final and this field is subject to change in
-                                the future.'
-                              type: string
-                            kind:
-                              description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                              type: string
-                            name:
-                              description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                              type: string
-                            namespace:
-                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
-                              type: string
-                            resourceVersion:
-                              description: 'Specific resourceVersion to which this reference
-                                is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
-                              type: string
-                            uid:
-                              description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
-                              type: string
-                          type: object
-                          x-kubernetes-map-type: atomic
-                        failureMessage:
-                          description: FailureMessage provides more information about
-                            the error.
+                        apiVersion:
+                          description: API version of the referent.
                           type: string
-                        hash:
-                          description: Hash represents the hash of the Classifier currently
-                            deployed in the Cluster
-                          format: byte
+                        fieldPath:
+                          description: 'If referring to a piece of an object instead
+                            of an entire object, this string should contain a valid
+                            JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                            For example, if the object reference is to a container within
+                            a pod, this would take on a value like: "spec.containers{name}"
+                            (where "name" refers to the name of the container that triggered
+                            the event) or if no container name is specified "spec.containers[2]"
+                            (container with index 2 in this pod). This syntax is chosen
+                            only to have some well-defined way of referencing a part
+                            of an object. TODO: this design is not final and this field
+                            is subject to change in the future.'
                           type: string
-                        status:
-                          description: Status represents the state of the feature in
-                            the workload cluster
-                          enum:
-                          - Provisioning
-                          - Provisioned
-                          - Failed
-                          - Removing
-                          - Removed
+                        kind:
+                          description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
                           type: string
-                      required:
-                      - cluster
-                      - hash
+                        name:
+                          description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                          type: string
+                        namespace:
+                          description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                          type: string
+                        resourceVersion:
+                          description: 'Specific resourceVersion to which this reference
+                            is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                          type: string
+                        uid:
+                          description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
+                          type: string
                       type: object
-                    conditions:
-                      description: Cluster conditions.
-                      items:
-                        description: Condition defines an observation of a Cluster API
-                          resource operational state.
-                        properties:
-                          lastTransitionTime:
-                            description: Last time the condition transitioned from one
-                              status to another. This should be when the underlying
-                              condition changed. If that is not known, then using the
-                              time when the API field changed is acceptable.
-                            format: date-time
-                            type: string
-                          message:
-                            description: A human readable message indicating details
-                              about the transition. This field may be empty.
-                            type: string
-                          name:
-                            description: Condition name
-                            type: string
-                          reason:
-                            description: The reason for the condition's last transition
-                              in CamelCase. The specific API may choose whether or not
-                              this field is considered a guaranteed API. This field
-                              may not be empty.
-                            type: string
-                          severity:
-                            description: Severity provides an explicit classification
-                              of Reason code, so the users or machines can immediately
-                              understand the current situation and act accordingly.
-                              The Severity field MUST be set only when Status=False.
-                            type: string
-                          status:
-                            description: Status of the condition, one of True, False,
-                              Unknown.
-                            type: string
-                          type:
-                            description: Type of condition in CamelCase or in foo.example.com/CamelCase.
-                            type: string
-                        required:
-                        - lastTransitionTime
-                        - name
-                        - status
-                        - type
-                        type: object
-                      type: array
-                    notificationSummaries:
-                      description: NotificationSummaries contains status information
-                        on notifications
-                      items:
-                        properties:
-                          failureMessage:
-                            description: FailureMessage is a human consumable message
-                              explaining the misconfiguration
-                            type: string
-                          name:
-                            description: Name of the notification check.
-                            type: string
-                          status:
-                            description: NotificationStatus specifies the notification
-                              status
-                            enum:
-                            - Delivered
-                            - FailedToDeliver
-                            type: string
-                        required:
-                        - name
-                        - status
-                        type: object
-                      type: array
+                      x-kubernetes-map-type: atomic
+                    failureMessage:
+                      description: FailureMessage provides more information about the
+                        error.
+                      type: string
+                    hash:
+                      description: Hash represents the hash of the Classifier currently
+                        deployed in the Cluster
+                      format: byte
+                      type: string
+                    status:
+                      description: Status represents the state of the feature in the
+                        workload cluster
+                      enum:
+                      - Provisioning
+                      - Provisioned
+                      - Failed
+                      - Removing
+                      - Removed
+                      type: string
                   required:
-                  - clusterInfo
+                  - cluster
+                  - hash
                   type: object
                 type: array
               matchingClusters:
-                description: MatchingClusterRefs reference all the clusters currently
-                  matching ClusterHealthCheck ClusterSelector
+                description: MatchingClusterRefs reference all the cluster-api Cluster
+                  currently matching ClusterProfile ClusterSelector
                 items:
                   description: "ObjectReference contains enough information to let you
                     inspect or modify the referred object. --- New uses of this type
