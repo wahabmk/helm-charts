@@ -1,10 +1,21 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-manager-role
+  name: {{ include "projectsveltos.fullname" . }}-hc-manager-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
   - ""
   resources:
@@ -28,7 +39,6 @@ rules:
   verbs:
   - get
   - list
-  - update
   - watch
 - apiGroups:
   - cluster.x-k8s.io
@@ -55,9 +65,25 @@ rules:
   - list
   - watch
 - apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clustersummaries
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clustersummaries/status
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - lib.projectsveltos.io
   resources:
-  - accessrequests
+  - clusterhealthchecks
   verbs:
   - create
   - delete
@@ -69,36 +95,13 @@ rules:
 - apiGroups:
   - lib.projectsveltos.io
   resources:
-  - classifierreports
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifiers
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - classifiers/finalizers
+  - clusterhealthchecks/finalizers
   verbs:
   - update
 - apiGroups:
   - lib.projectsveltos.io
   resources:
-  - classifiers/status
+  - clusterhealthchecks/status
   verbs:
   - get
   - patch
@@ -107,6 +110,25 @@ rules:
   - lib.projectsveltos.io
   resources:
   - debuggingconfigurations
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - healthcheckreports
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - healthchecks
   verbs:
   - get
   - list
@@ -132,14 +154,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-manager-rolebinding
+  name: {{ include "projectsveltos.fullname" . }}-hc-manager-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-manager-role'
+  name: '{{ include "projectsveltos.fullname" . }}-hc-manager-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-hc-manager'
   namespace: '{{ .Release.Namespace }}'

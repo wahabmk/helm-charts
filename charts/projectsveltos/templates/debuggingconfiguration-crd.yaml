@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: debuggingconfigurations.lib.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.8.0
+    controller-gen.kubebuilder.io/version: v0.10.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
@@ -54,6 +54,7 @@ spec:
                       - DriftDetectionManager
                       - AccessManager
                       - HealthCheckManager
+                      - EventManager
                       type: string
                     logLevel:
                       description: 'LogLevel is the log severity above which logs are

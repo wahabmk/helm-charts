@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: {{ include "projectsveltos.fullname" . }}-manager-metrics-service
   labels:
-    control-plane: hc-manager
+    control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.managerMetricsService.type }}
   selector:
-    control-plane: hc-manager
+    control-plane: classifier
   {{- include "projectsveltos.selectorLabels" . | nindent 4 }}
   ports:
 	{{- .Values.managerMetricsService.ports | toYaml | nindent 2 -}}

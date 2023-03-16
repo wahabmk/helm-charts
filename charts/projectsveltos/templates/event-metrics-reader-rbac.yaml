@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-metrics-reader
+  name: {{ include "projectsveltos.fullname" . }}-event-metrics-reader
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:

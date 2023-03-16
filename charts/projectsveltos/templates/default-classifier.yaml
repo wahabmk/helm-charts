@@ -1,0 +1,14 @@
+apiVersion: lib.projectsveltos.io/v1alpha1
+kind: Classifier
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-default-classifier
+  labels:
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install
+    helm.sh/hook-weight: "-5"
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  classifierLabels:
+  - key: sveltos-agent
+    value: present
