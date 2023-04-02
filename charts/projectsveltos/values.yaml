@@ -13,7 +13,7 @@ accessManager:
   manager:
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
@@ -55,7 +55,7 @@ eventManager:
   manager:
     image:
       repository: projectsveltos/event-manager-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
@@ -97,7 +97,7 @@ fmControllerManager:
   manager:
     image:
       repository: projectsveltos/sveltos-manager-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
@@ -139,7 +139,7 @@ hcManager:
   manager:
     image:
       repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
@@ -182,7 +182,7 @@ manager:
   manager:
     image:
       repository: projectsveltos/classifier-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
@@ -224,7 +224,7 @@ scManager:
   manager:
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.7.2
+      tag: v0.8.0
     resources:
       limits:
         cpu: 500m
