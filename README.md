@@ -13,12 +13,28 @@ projectsveltos` to see the charts.
 
 To install the projectsveltos chart:
 
-    kubectl create namespace projectsveltos
-    helm install projectsveltos projectsveltos/projectsveltos -n projectsveltos
+```bash
+kubectl create namespace projectsveltos
+helm install projectsveltos projectsveltos/projectsveltos -n projectsveltos
+```
+
+Verify default classifier instance has been installed.
+
+```bash
+kubectl get classifier
+```
+
+If not present, do install it manually
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/projectsveltos/sveltos/main/manifest/default-classifier.yaml
+```
 
 To uninstall the chart:
 
-    helm delete projectsveltos
+```bash
+helm delete projectsveltos
+```
 
 ## Contributing 
 
