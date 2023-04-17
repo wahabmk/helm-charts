@@ -4,7 +4,7 @@ kind: ServiceMonitor
 metadata:
   name: {{ include "projectsveltos.fullname" . }}-fm-controller-manager-metrics-monitor
   labels:
-    control-plane: controller-manager
+    control-plane: addon-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
   endpoints:
@@ -16,5 +16,5 @@ spec:
       insecureSkipVerify: true
   selector:
     matchLabels:
-      control-plane: controller-manager
+      control-plane: addon-manager
 {{ end }}
