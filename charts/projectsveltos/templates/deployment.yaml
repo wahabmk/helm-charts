@@ -439,19 +439,19 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
+  name: {{ include "projectsveltos.fullname" . }}-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
+  name: {{ include "projectsveltos.fullname" . }}-manager
   labels:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.classifierManager.replicas }}
+  replicas: {{ .Values.manager.replicas }}
   selector:
     matchLabels:
       control-plane: classifier
@@ -476,7 +476,7 @@ spec:
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ .Values.kubernetesClusterDomain }}
-        image: {{ .Values.classifierManager.manager.image.repository }}:{{ .Values.classifierManager.manager.image.tag
+        image: {{ .Values.manager.manager.image.repository }}:{{ .Values.manager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
           httpGet:
@@ -491,8 +491,7 @@ spec:
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
-        resources: {{- toYaml .Values.classifierManager.manager.resources | nindent 10
-          }}
+        resources: {{- toYaml .Values.manager.manager.resources | nindent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -506,15 +505,14 @@ spec:
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ .Values.kubernetesClusterDomain }}
-        image: {{ .Values.classifierManager.kubeRbacProxy.image.repository }}:{{ .Values.classifierManager.kubeRbacProxy.image.tag
+        image: {{ .Values.manager.kubeRbacProxy.image.repository }}:{{ .Values.manager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
           name: https
           protocol: TCP
-        resources: {{- toYaml .Values.classifierManager.kubeRbacProxy.resources | nindent
-          10 }}
+        resources: {{- toYaml .Values.manager.kubeRbacProxy.resources | nindent 10 }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -522,12 +520,5 @@ spec:
             - ALL
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-classifier-manager
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-manager
       terminationGracePeriodSeconds: 10
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: {{ include "projectsveltos.fullname" . }}-sveltosctl
-  labels:
-  {{- include "projectsveltos.labels" . | nindent 4 }}
