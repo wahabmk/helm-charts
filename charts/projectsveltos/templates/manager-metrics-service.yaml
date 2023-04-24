@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-metrics-service
+  name: {{ include "projectsveltos.fullname" . }}-manager-metrics-service
   labels:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.classifierManagerMetricsService.type }}
+  type: {{ .Values.managerMetricsService.type }}
   selector:
     control-plane: classifier
   {{- include "projectsveltos.selectorLabels" . | nindent 4 }}
   ports:
-	{{- .Values.classifierManagerMetricsService.ports | toYaml | nindent 2 -}}
+	{{- .Values.managerMetricsService.ports | toYaml | nindent 2 -}}
