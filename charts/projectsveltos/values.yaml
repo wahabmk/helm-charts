@@ -13,7 +13,7 @@ accessManager:
   manager:
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.10.0
+      tag: v0.10.1
     resources:
       limits:
         cpu: 500m
@@ -55,14 +55,7 @@ addonManager:
   manager:
     image:
       repository: projectsveltos/addon-manager-amd64
-      tag: v0.10.0
-    resources:
-      limits:
-        cpu: 500m
-        memory: 128Mi
-      requests:
-        cpu: 500m
-        memory: 128Mi
+      tag: v0.10.1
   replicas: 1
 addonManagerConfig:
   controllerManagerConfigYaml:
@@ -97,7 +90,7 @@ eventManager:
   manager:
     image:
       repository: projectsveltos/event-manager-amd64
-      tag: v0.10.0
+      tag: v0.10.1
     resources:
       limits:
         cpu: 500m
@@ -139,7 +132,7 @@ hcManager:
   manager:
     image:
       repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.10.0
+      tag: v0.10.1
     resources:
       limits:
         cpu: 500m
@@ -182,7 +175,7 @@ manager:
   manager:
     image:
       repository: projectsveltos/classifier-amd64
-      tag: v0.10.0
+      tag: v0.10.1
     resources:
       limits:
         cpu: 500m
@@ -224,7 +217,7 @@ scManager:
   manager:
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.10.0
+      tag: v0.10.1
     resources:
       limits:
         cpu: 500m
