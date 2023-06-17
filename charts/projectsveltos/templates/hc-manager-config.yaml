@@ -5,19 +5,5 @@ metadata:
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 data:
-  controller_manager_config.yaml: |
-    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
-    health:
-      healthProbeBindAddress: {{ .Values.hcManagerConfig.controllerManagerConfigYaml.health.healthProbeBindAddress
-        | quote }}
-    kind: ControllerManagerConfig
-    leaderElection:
-      leaderElect: {{ .Values.hcManagerConfig.controllerManagerConfigYaml.leaderElection.leaderElect
-        }}
-      resourceName: {{ .Values.hcManagerConfig.controllerManagerConfigYaml.leaderElection.resourceName
-        | quote }}
-    metrics:
-      bindAddress: {{ .Values.hcManagerConfig.controllerManagerConfigYaml.metrics.bindAddress
-        | quote }}
-    webhook:
-      port: {{ .Values.hcManagerConfig.controllerManagerConfigYaml.webhook.port }}
+  controller_manager_config.yaml: {{ .Values.hcManagerConfig.controllerManagerConfigYaml
+    | toYaml | indent 1 }}

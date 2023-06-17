@@ -27,16 +27,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
-        - --v=5
+      - args: {{- toYaml .Values.addonManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.addonManager.manager.image.repository }}:{{ .Values.addonManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -53,22 +49,15 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.addonManager.manager.containerSecurityContext
+          | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp
           name: tmp
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+      - args: {{- toYaml .Values.addonManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.addonManager.kubeRbacProxy.image.repository }}:{{ .Values.addonManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -78,11 +67,8 @@ spec:
           protocol: TCP
         resources: {{- toYaml .Values.addonManager.kubeRbacProxy.resources | nindent 10
           }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.addonManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-manager
@@ -90,6 +76,80 @@ spec:
       volumes:
       - emptyDir: {}
         name: tmp
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+  labels:
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+  labels:
+    control-plane: addon-constraint-manager
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.addonConstraintManager.replicas }}
+  selector:
+    matchLabels:
+      control-plane: addon-constraint-manager
+    {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        control-plane: addon-constraint-manager
+      {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+    spec:
+      containers:
+      - args: {{- toYaml .Values.addonConstraintManager.manager.args | nindent 8 }}
+        command:
+        - /manager
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.addonConstraintManager.manager.image.repository }}:{{ .Values.addonConstraintManager.manager.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources: {}
+        securityContext: {{- toYaml .Values.addonConstraintManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.args | nindent 8
+          }}
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.addonConstraintManager.kubeRbacProxy.image.repository }}:{{ .Values.addonConstraintManager.kubeRbacProxy.image.tag
+          | default .Chart.AppVersion }}
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.resources |
+          nindent 10 }}
+        securityContext: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+      terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -120,16 +180,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
-        - --v=5
+      - args: {{- toYaml .Values.accessManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.accessManager.manager.image.repository }}:{{ .Values.accessManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -146,19 +202,12 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.accessManager.manager.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+        securityContext: {{- toYaml .Values.accessManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.accessManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.accessManager.kubeRbacProxy.image.repository }}:{{ .Values.accessManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -168,11 +217,8 @@ spec:
           protocol: TCP
         resources: {{- toYaml .Values.accessManager.kubeRbacProxy.resources | nindent 10
           }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.accessManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-access-manager
@@ -207,15 +253,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
+      - args: {{- toYaml .Values.scManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.scManager.manager.image.repository }}:{{ .Values.scManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -232,19 +275,12 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.scManager.manager.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+        securityContext: {{- toYaml .Values.scManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.scManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.scManager.kubeRbacProxy.image.repository }}:{{ .Values.scManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -253,11 +289,8 @@ spec:
           name: https
           protocol: TCP
         resources: {{- toYaml .Values.scManager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.scManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-sc-manager
@@ -292,16 +325,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
-        - --v=5
+      - args: {{- toYaml .Values.hcManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.hcManager.manager.image.repository }}:{{ .Values.hcManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -318,19 +347,12 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.hcManager.manager.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+        securityContext: {{- toYaml .Values.hcManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.hcManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.hcManager.kubeRbacProxy.image.repository }}:{{ .Values.hcManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -339,11 +361,8 @@ spec:
           name: https
           protocol: TCP
         resources: {{- toYaml .Values.hcManager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.hcManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-hc-manager
@@ -378,16 +397,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
-        - --v=5
+      - args: {{- toYaml .Values.eventManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.eventManager.manager.image.repository }}:{{ .Values.eventManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -404,19 +419,12 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.eventManager.manager.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+        securityContext: {{- toYaml .Values.eventManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.eventManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.eventManager.kubeRbacProxy.image.repository }}:{{ .Values.eventManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -426,11 +434,8 @@ spec:
           protocol: TCP
         resources: {{- toYaml .Values.eventManager.kubeRbacProxy.resources | nindent 10
           }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.eventManager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-event-manager
@@ -465,17 +470,12 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args:
-        - --health-probe-bind-address=:8081
-        - --metrics-bind-address=127.0.0.1:8080
-        - --leader-elect
-        - --report-mode=0
-        - --v=5
+      - args: {{- toYaml .Values.manager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.manager.manager.image.repository }}:{{ .Values.manager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
@@ -492,19 +492,12 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.manager.manager.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-      - args:
-        - --secure-listen-address=0.0.0.0:8443
-        - --upstream=http://127.0.0.1:8080/
-        - --logtostderr=true
-        - --v=0
+        securityContext: {{- toYaml .Values.manager.manager.containerSecurityContext |
+          nindent 10 }}
+      - args: {{- toYaml .Values.manager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ .Values.kubernetesClusterDomain }}
+          value: {{ quote .Values.kubernetesClusterDomain }}
         image: {{ .Values.manager.kubeRbacProxy.image.repository }}:{{ .Values.manager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
@@ -513,11 +506,8 @@ spec:
           name: https
           protocol: TCP
         resources: {{- toYaml .Values.manager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
+        securityContext: {{- toYaml .Values.manager.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-manager
