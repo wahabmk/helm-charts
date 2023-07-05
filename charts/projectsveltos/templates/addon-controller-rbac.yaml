@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager-role
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
@@ -22,6 +22,15 @@ rules:
   - list
   - watch
 - apiGroups:
+  - '*'
+  resources:
+  - '*'
+  verbs:
+  - get
+  - impersonate
+  - list
+  - watch
+- apiGroups:
   - apiextensions.k8s.io
   resources:
   - customresourcedefinitions
@@ -36,8 +45,6 @@ rules:
   verbs:
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - cluster.x-k8s.io
@@ -64,9 +71,72 @@ rules:
   - list
   - watch
 - apiGroups:
-  - lib.projectsveltos.io
+  - config.projectsveltos.io
   resources:
-  - addonconstraints
+  - clusterconfigurations
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterconfigurations/status
+  verbs:
+  - get
+  - list
+  - update
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterprofiles
+  verbs:
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterprofiles/finalizers
+  verbs:
+  - patch
+  - update
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterprofiles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterreports
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clusterreports/status
+  verbs:
+  - get
+  - list
+  - update
+- apiGroups:
+  - config.projectsveltos.io
+  resources:
+  - clustersummaries
   verbs:
   - create
   - delete
@@ -76,18 +146,67 @@ rules:
   - update
   - watch
 - apiGroups:
-  - lib.projectsveltos.io
+  - config.projectsveltos.io
   resources:
-  - addonconstraints/finalizers
+  - clustersummaries/finalizers
   verbs:
+  - patch
   - update
 - apiGroups:
-  - lib.projectsveltos.io
+  - config.projectsveltos.io
   resources:
-  - addonconstraints/status
+  - clustersummaries/status
   verbs:
   - get
   - patch
+  - update
+- apiGroups:
+  - controlplane.cluster.x-k8s.io
+  resources:
+  - kubeadmcontrolplanes
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extension.projectsveltos.io
+  resources:
+  - jsonnetsources
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - extension.projectsveltos.io
+  resources:
+  - yttsources
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - infrastructure.cluster.x-k8s.io
+  resources:
+  - '*'
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - addoncompliances
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - addoncompliances/status
+  verbs:
+  - get
+  - list
   - update
 - apiGroups:
   - lib.projectsveltos.io
@@ -104,8 +223,6 @@ rules:
   verbs:
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - lib.projectsveltos.io
@@ -167,14 +284,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager-rolebinding
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-addon-constraint-manager-role'
+  name: '{{ include "projectsveltos.fullname" . }}-addon-controller-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-addon-constraint-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-addon-controller'
   namespace: '{{ .Release.Namespace }}'

@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-manager-role-extra
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller-role-extra
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules: null

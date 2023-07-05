@@ -1,39 +1,39 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-manager
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-manager
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller
   labels:
-    control-plane: addon-manager
+    control-plane: addon-controller
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.addonManager.replicas }}
+  replicas: {{ .Values.addonController.replicas }}
   selector:
     matchLabels:
-      control-plane: addon-manager
+      control-plane: addon-controller
     {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        control-plane: addon-manager
+        control-plane: addon-controller
       {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
       annotations:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args: {{- toYaml .Values.addonManager.manager.args | nindent 8 }}
+      - args: {{- toYaml .Values.addonController.controller.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonManager.manager.image.repository }}:{{ .Values.addonManager.manager.image.tag
+        image: {{ .Values.addonController.controller.image.repository }}:{{ .Values.addonController.controller.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
           httpGet:
@@ -41,7 +41,7 @@ spec:
             port: 8081
           initialDelaySeconds: 15
           periodSeconds: 20
-        name: manager
+        name: controller
         readinessProbe:
           httpGet:
             path: /readyz
@@ -49,29 +49,29 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {}
-        securityContext: {{- toYaml .Values.addonManager.manager.containerSecurityContext
+        securityContext: {{- toYaml .Values.addonController.controller.containerSecurityContext
           | nindent 10 }}
         volumeMounts:
         - mountPath: /tmp
           name: tmp
-      - args: {{- toYaml .Values.addonManager.kubeRbacProxy.args | nindent 8 }}
+      - args: {{- toYaml .Values.addonController.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonManager.kubeRbacProxy.image.repository }}:{{ .Values.addonManager.kubeRbacProxy.image.tag
+        image: {{ .Values.addonController.kubeRbacProxy.image.repository }}:{{ .Values.addonController.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
           name: https
           protocol: TCP
-        resources: {{- toYaml .Values.addonManager.kubeRbacProxy.resources | nindent 10
-          }}
-        securityContext: {{- toYaml .Values.addonManager.kubeRbacProxy.containerSecurityContext
+        resources: {{- toYaml .Values.addonController.kubeRbacProxy.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.addonController.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-manager
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-controller
       terminationGracePeriodSeconds: 10
       volumes:
       - emptyDir: {}
@@ -80,39 +80,39 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
   labels:
-    control-plane: addon-constraint-manager
+    control-plane: addon-compliance-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.addonConstraintManager.replicas }}
+  replicas: {{ .Values.addonComplianceManager.replicas }}
   selector:
     matchLabels:
-      control-plane: addon-constraint-manager
+      control-plane: addon-compliance-manager
     {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        control-plane: addon-constraint-manager
+        control-plane: addon-compliance-manager
       {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
       annotations:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args: {{- toYaml .Values.addonConstraintManager.manager.args | nindent 8 }}
+      - args: {{- toYaml .Values.addonComplianceManager.manager.args | nindent 8 }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonConstraintManager.manager.image.repository }}:{{ .Values.addonConstraintManager.manager.image.tag
+        image: {{ .Values.addonComplianceManager.manager.image.repository }}:{{ .Values.addonComplianceManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
           httpGet:
@@ -128,27 +128,27 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {}
-        securityContext: {{- toYaml .Values.addonConstraintManager.manager.containerSecurityContext
+        securityContext: {{- toYaml .Values.addonComplianceManager.manager.containerSecurityContext
           | nindent 10 }}
-      - args: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.args | nindent 8
+      - args: {{- toYaml .Values.addonComplianceManager.kubeRbacProxy.args | nindent 8
           }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonConstraintManager.kubeRbacProxy.image.repository }}:{{ .Values.addonConstraintManager.kubeRbacProxy.image.tag
+        image: {{ .Values.addonComplianceManager.kubeRbacProxy.image.repository }}:{{ .Values.addonComplianceManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
           name: https
           protocol: TCP
-        resources: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.resources |
+        resources: {{- toYaml .Values.addonComplianceManager.kubeRbacProxy.resources |
           nindent 10 }}
-        securityContext: {{- toYaml .Values.addonConstraintManager.kubeRbacProxy.containerSecurityContext
+        securityContext: {{- toYaml .Values.addonComplianceManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-constraint-manager
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1

@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: clustersummaries.config.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.4
+    controller-gen.kubebuilder.io/version: v0.12.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:

@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-leader-election-role
+  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-leader-election-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
@@ -40,14 +40,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-constraint-leader-election-rolebinding
+  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-leader-election-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: '{{ include "projectsveltos.fullname" . }}-addon-constraint-leader-election-role'
+  name: '{{ include "projectsveltos.fullname" . }}-addon-compliance-leader-election-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-addon-constraint-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-addon-compliance-manager'
   namespace: '{{ .Release.Namespace }}'

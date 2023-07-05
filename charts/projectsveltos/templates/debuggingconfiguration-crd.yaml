@@ -3,7 +3,7 @@ kind: CustomResourceDefinition
 metadata:
   name: debuggingconfigurations.lib.projectsveltos.io
   annotations:
-    controller-gen.kubebuilder.io/version: v0.11.3
+    controller-gen.kubebuilder.io/version: v0.12.0
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
@@ -48,7 +48,7 @@ spec:
                         applies to.
                       enum:
                       - AddonManager
-                      - AddonConstraintManager
+                      - AddonComplianceManager
                       - Classifier
                       - ClassifierAgent
                       - SveltosClusterManager

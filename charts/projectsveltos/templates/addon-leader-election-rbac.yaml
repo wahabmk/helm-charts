@@ -49,5 +49,5 @@ roleRef:
   name: '{{ include "projectsveltos.fullname" . }}-addon-leader-election-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-addon-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-addon-controller'
   namespace: '{{ .Release.Namespace }}'
