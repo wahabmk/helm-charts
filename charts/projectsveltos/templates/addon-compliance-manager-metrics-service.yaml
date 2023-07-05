@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-metrics-service
+  labels:
+    control-plane: addon-compliance-manager
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.addonComplianceManagerMetricsService.type }}
+  selector:
+    control-plane: addon-compliance-manager
+  {{- include "projectsveltos.selectorLabels" . | nindent 4 }}
+  ports:
+	{{- .Values.addonComplianceManagerMetricsService.ports | toYaml | nindent 2 -}}
