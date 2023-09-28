@@ -444,14 +444,14 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-manager
+  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-manager
+  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
   labels:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -510,5 +510,5 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-manager
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-classifier-manager
       terminationGracePeriodSeconds: 10
