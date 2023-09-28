@@ -6,9 +6,9 @@ metadata:
     control-plane: addon-compliance-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.addonComplianceManagerMetricsService.type }}
+  type: {{ .Values.addonComplianceMetricsService.type }}
   selector:
     control-plane: addon-compliance-manager
   {{- include "projectsveltos.selectorLabels" . | nindent 4 }}
   ports:
-	{{- .Values.addonComplianceManagerMetricsService.ports | toYaml | nindent 2 -}}
+	{{- .Values.addonComplianceMetricsService.ports | toYaml | nindent 2 -}}
