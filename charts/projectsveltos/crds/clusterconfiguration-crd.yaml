@@ -1,11 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: clusterconfigurations.config.projectsveltos.io
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  labels:
-  {{- include "projectsveltos.labels" . | nindent 4 }}
+  name: clusterconfigurations.config.projectsveltos.io
 spec:
   group: config.projectsveltos.io
   names:
@@ -34,7 +32,8 @@ spec:
           metadata:
             type: object
           status:
-            description: ClusterConfigurationStatus defines the observed state of ClusterConfiguration
+            description: ClusterConfigurationStatus defines the observed state of
+              ClusterConfiguration
             properties:
               clusterProfileResources:
                 description: ClusterProfileResources is the list of resources currently
@@ -44,13 +43,13 @@ spec:
                     deployed in this Cluster due to a given ClusterProfile
                   properties:
                     Features:
-                      description: Features contains the list of policies deployed in
-                        the Cluster because of a given feature
+                      description: Features contains the list of policies deployed
+                        in the Cluster because of a given feature
                       items:
                         properties:
                           charts:
-                            description: Charts is a list of helm charts deployed in
-                              the Cluster.
+                            description: Charts is a list of helm charts deployed
+                              in the Cluster.
                             items:
                               properties:
                                 appVersion:
@@ -58,8 +57,8 @@ spec:
                                     deployed in the Cluster.
                                   type: string
                                 chartVersion:
-                                  description: ChartVersion is the version of the helm
-                                    chart deployed in the Cluster.
+                                  description: ChartVersion is the version of the
+                                    helm chart deployed in the Cluster.
                                   type: string
                                 lastAppliedTime:
                                   description: LastAppliedTime identifies when this
@@ -76,8 +75,8 @@ spec:
                                   minLength: 1
                                   type: string
                                 repoURL:
-                                  description: RepoURL URL of the repo containing the
-                                    helm chart deployed in the Cluster.
+                                  description: RepoURL URL of the repo containing
+                                    the helm chart deployed in the Cluster.
                                   minLength: 1
                                   type: string
                               required:
@@ -96,8 +95,8 @@ spec:
                             - Kustomize
                             type: string
                           resources:
-                            description: Resources is a list of resources deployed in
-                              the Cluster.
+                            description: Resources is a list of resources deployed
+                              in the Cluster.
                             items:
                               properties:
                                 group:
@@ -120,9 +119,9 @@ spec:
                                   minLength: 1
                                   type: string
                                 namespace:
-                                  description: Namespace of the resource deployed in
-                                    the Cluster. Empty for resources scoped at cluster
-                                    level.
+                                  description: Namespace of the resource deployed
+                                    in the Cluster. Empty for resources scoped at
+                                    cluster level.
                                   type: string
                                 owner:
                                   description: Owner is the list of ConfigMap/Secret
@@ -132,21 +131,21 @@ spec:
                                       description: API version of the referent.
                                       type: string
                                     fieldPath:
-                                      description: 'If referring to a piece of an object
-                                        instead of an entire object, this string should
-                                        contain a valid JSON/Go field access statement,
-                                        such as desiredState.manifest.containers[2].
-                                        For example, if the object reference is to a
-                                        container within a pod, this would take on a
-                                        value like: "spec.containers{name}" (where "name"
-                                        refers to the name of the container that triggered
-                                        the event) or if no container name is specified
-                                        "spec.containers[2]" (container with index 2
-                                        in this pod). This syntax is chosen only to
-                                        have some well-defined way of referencing a
-                                        part of an object. TODO: this design is not
-                                        final and this field is subject to change in
-                                        the future.'
+                                      description: 'If referring to a piece of an
+                                        object instead of an entire object, this string
+                                        should contain a valid JSON/Go field access
+                                        statement, such as desiredState.manifest.containers[2].
+                                        For example, if the object reference is to
+                                        a container within a pod, this would take
+                                        on a value like: "spec.containers{name}" (where
+                                        "name" refers to the name of the container
+                                        that triggered the event) or if no container
+                                        name is specified "spec.containers[2]" (container
+                                        with index 2 in this pod). This syntax is
+                                        chosen only to have some well-defined way
+                                        of referencing a part of an object. TODO:
+                                        this design is not final and this field is
+                                        subject to change in the future.'
                                       type: string
                                     kind:
                                       description: 'Kind of the referent. More info:
@@ -162,7 +161,8 @@ spec:
                                       type: string
                                     resourceVersion:
                                       description: 'Specific resourceVersion to which
-                                        this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                                        this reference is made, if any. More info:
+                                        https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                                       type: string
                                     uid:
                                       description: 'UID of the referent. More info:
@@ -171,8 +171,8 @@ spec:
                                   type: object
                                   x-kubernetes-map-type: atomic
                                 version:
-                                  description: Version of the resource deployed in the
-                                    Cluster.
+                                  description: Version of the resource deployed in
+                                    the Cluster.
                                   minLength: 1
                                   type: string
                               required:
@@ -201,9 +201,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []

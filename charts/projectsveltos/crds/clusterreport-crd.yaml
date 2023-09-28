@@ -1,11 +1,9 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: clusterreports.config.projectsveltos.io
   annotations:
     controller-gen.kubebuilder.io/version: v0.12.0
-  labels:
-  {{- include "projectsveltos.labels" . | nindent 4 }}
+  name: clusterreports.config.projectsveltos.io
 spec:
   group: config.projectsveltos.io
   names:
@@ -40,8 +38,8 @@ spec:
                   is for.
                 type: string
               clusterNamespace:
-                description: ClusterNamespace is the namespace of the CAPI Cluster this
-                  ClusterReport is for.
+                description: ClusterNamespace is the namespace of the CAPI Cluster
+                  this ClusterReport is for.
                 type: string
             required:
             - clusterName
@@ -66,11 +64,12 @@ spec:
                       - Conflict
                       type: string
                     message:
-                      description: Message is for any message that needs to added to
-                        better explain the action.
+                      description: Message is for any message that needs to added
+                        to better explain the action.
                       type: string
                     resource:
-                      description: Resource contains information about Kubernetes Resource
+                      description: Resource contains information about Kubernetes
+                        Resource
                       properties:
                         group:
                           description: Group of the resource deployed in the Cluster.
@@ -101,17 +100,17 @@ spec:
                               type: string
                             fieldPath:
                               description: 'If referring to a piece of an object instead
-                                of an entire object, this string should contain a valid
-                                JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                                of an entire object, this string should contain a
+                                valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
                                 For example, if the object reference is to a container
                                 within a pod, this would take on a value like: "spec.containers{name}"
-                                (where "name" refers to the name of the container that
-                                triggered the event) or if no container name is specified
-                                "spec.containers[2]" (container with index 2 in this
-                                pod). This syntax is chosen only to have some well-defined
-                                way of referencing a part of an object. TODO: this design
-                                is not final and this field is subject to change in
-                                the future.'
+                                (where "name" refers to the name of the container
+                                that triggered the event) or if no container name
+                                is specified "spec.containers[2]" (container with
+                                index 2 in this pod). This syntax is chosen only to
+                                have some well-defined way of referencing a part of
+                                an object. TODO: this design is not final and this
+                                field is subject to change in the future.'
                               type: string
                             kind:
                               description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -120,11 +119,12 @@ spec:
                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                               type: string
                             namespace:
-                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              description: 'Namespace of the referent. More info:
+                                https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                               type: string
                             resourceVersion:
-                              description: 'Specific resourceVersion to which this reference
-                                is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              description: 'Specific resourceVersion to which this
+                                reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                               type: string
                             uid:
                               description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
@@ -161,7 +161,8 @@ spec:
                       - Conflict
                       type: string
                     chartName:
-                      description: ReleaseName of the release deployed in the CAPI Cluster.
+                      description: ReleaseName of the release deployed in the CAPI
+                        Cluster.
                       minLength: 1
                       type: string
                     chartVersion:
@@ -169,11 +170,12 @@ spec:
                         in the CAPI Cluster.
                       type: string
                     message:
-                      description: Message is for any message that needs to added to
-                        better explain the action.
+                      description: Message is for any message that needs to added
+                        to better explain the action.
                       type: string
                     releaseNamespace:
-                      description: Namespace where release is deployed in the CAPI Cluster.
+                      description: Namespace where release is deployed in the CAPI
+                        Cluster.
                       minLength: 1
                       type: string
                   required:
@@ -198,11 +200,12 @@ spec:
                       - Conflict
                       type: string
                     message:
-                      description: Message is for any message that needs to added to
-                        better explain the action.
+                      description: Message is for any message that needs to added
+                        to better explain the action.
                       type: string
                     resource:
-                      description: Resource contains information about Kubernetes Resource
+                      description: Resource contains information about Kubernetes
+                        Resource
                       properties:
                         group:
                           description: Group of the resource deployed in the Cluster.
@@ -233,17 +236,17 @@ spec:
                               type: string
                             fieldPath:
                               description: 'If referring to a piece of an object instead
-                                of an entire object, this string should contain a valid
-                                JSON/Go field access statement, such as desiredState.manifest.containers[2].
+                                of an entire object, this string should contain a
+                                valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
                                 For example, if the object reference is to a container
                                 within a pod, this would take on a value like: "spec.containers{name}"
-                                (where "name" refers to the name of the container that
-                                triggered the event) or if no container name is specified
-                                "spec.containers[2]" (container with index 2 in this
-                                pod). This syntax is chosen only to have some well-defined
-                                way of referencing a part of an object. TODO: this design
-                                is not final and this field is subject to change in
-                                the future.'
+                                (where "name" refers to the name of the container
+                                that triggered the event) or if no container name
+                                is specified "spec.containers[2]" (container with
+                                index 2 in this pod). This syntax is chosen only to
+                                have some well-defined way of referencing a part of
+                                an object. TODO: this design is not final and this
+                                field is subject to change in the future.'
                               type: string
                             kind:
                               description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
@@ -252,11 +255,12 @@ spec:
                               description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
                               type: string
                             namespace:
-                              description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                              description: 'Namespace of the referent. More info:
+                                https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
                               type: string
                             resourceVersion:
-                              description: 'Specific resourceVersion to which this reference
-                                is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
+                              description: 'Specific resourceVersion to which this
+                                reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency'
                               type: string
                             uid:
                               description: 'UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids'
@@ -284,9 +288,3 @@ spec:
     storage: true
     subresources:
       status: {}
-status:
-  acceptedNames:
-    kind: ""
-    plural: ""
-  conditions: []
-  storedVersions: []
