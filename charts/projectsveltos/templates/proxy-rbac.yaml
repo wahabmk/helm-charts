@@ -30,5 +30,5 @@ roleRef:
   name: '{{ include "projectsveltos.fullname" . }}-proxy-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-manager'
+  name: '{{ include "projectsveltos.fullname" . }}-classifier-manager'
   namespace: '{{ .Release.Namespace }}'
