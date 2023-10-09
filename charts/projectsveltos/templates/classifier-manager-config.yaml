@@ -5,5 +5,5 @@ metadata:
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 data:
-  controller_manager_config.yaml: {{ .Values.managerConfig.controllerManagerConfigYaml
+  controller_manager_config.yaml: {{ .Values.classifierManagerConfig.controllerManagerConfigYaml
     | toYaml | indent 1 }}

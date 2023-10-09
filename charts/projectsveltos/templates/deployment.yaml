@@ -1,85 +1,6 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller
-  labels:
-  {{- include "projectsveltos.labels" . | nindent 4 }}
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller
-  labels:
-    control-plane: addon-controller
-  {{- include "projectsveltos.labels" . | nindent 4 }}
-spec:
-  replicas: {{ .Values.addonController.replicas }}
-  selector:
-    matchLabels:
-      control-plane: addon-controller
-    {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
-  template:
-    metadata:
-      labels:
-        control-plane: addon-controller
-      {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
-      annotations:
-        kubectl.kubernetes.io/default-container: manager
-    spec:
-      containers:
-      - args: {{- toYaml .Values.addonController.controller.args | nindent 8 }}
-        command:
-        - /manager
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonController.controller.image.repository }}:{{ .Values.addonController.controller.image.tag
-          | default .Chart.AppVersion }}
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8081
-          initialDelaySeconds: 15
-          periodSeconds: 20
-        name: controller
-        readinessProbe:
-          httpGet:
-            path: /readyz
-            port: 8081
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        resources: {}
-        securityContext: {{- toYaml .Values.addonController.controller.containerSecurityContext
-          | nindent 10 }}
-        volumeMounts:
-        - mountPath: /tmp
-          name: tmp
-      - args: {{- toYaml .Values.addonController.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonController.kubeRbacProxy.image.repository }}:{{ .Values.addonController.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.addonController.kubeRbacProxy.resources | nindent
-          10 }}
-        securityContext: {{- toYaml .Values.addonController.kubeRbacProxy.containerSecurityContext
-          | nindent 10 }}
-      securityContext:
-        runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-controller
-      terminationGracePeriodSeconds: 10
-      volumes:
-      - emptyDir: {}
-        name: tmp
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
   name: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -150,6 +71,89 @@ spec:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
       terminationGracePeriodSeconds: 10
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller
+  labels:
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "projectsveltos.fullname" . }}-addon-controller
+  labels:
+    control-plane: addon-controller
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.addonController.replicas }}
+  selector:
+    matchLabels:
+      control-plane: addon-controller
+    {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        control-plane: addon-controller
+      {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+    spec:
+      containers:
+{{ if .Values.agent.managementCluster }}      
+      - args: {{- toYaml .Values.addonController.controller.argsAgentMgmtCluster | nindent 8 }}
+{{ else }}
+      - args: {{- toYaml .Values.addonController.controller.args | nindent 8 }}
+{{ end }}
+        command:
+        - /manager
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.addonController.controller.image.repository }}:{{ .Values.addonController.controller.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: controller
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources: {}
+        securityContext: {{- toYaml .Values.addonController.controller.containerSecurityContext
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      - args: {{- toYaml .Values.addonController.kubeRbacProxy.args | nindent 8 }}
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.addonController.kubeRbacProxy.image.repository }}:{{ .Values.addonController.kubeRbacProxy.image.tag
+          | default .Chart.AppVersion }}
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {{- toYaml .Values.addonController.kubeRbacProxy.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.addonController.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-controller
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - emptyDir: {}
+        name: tmp
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -456,9 +460,9 @@ metadata:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.manager.replicas }}
+  replicas: {{ .Values.classifierManager.replicas }}
   selector:
-    matchLabels:
+    matchLabels:      
       control-plane: classifier
     {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
   template:
@@ -470,13 +474,17 @@ spec:
         kubectl.kubernetes.io/default-container: manager
     spec:
       containers:
-      - args: {{- toYaml .Values.manager.manager.args | nindent 8 }}
+{{ if .Values.agent.managementCluster }}      
+      - args: {{- toYaml .Values.classifierManager.manager.argsAgentMgmtCluster | nindent 8 }}
+{{ else }}
+      - args: {{- toYaml .Values.classifierManager.manager.args | nindent 8 }}
+{{ end }}
         command:
         - /manager
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.manager.manager.image.repository }}:{{ .Values.manager.manager.image.tag
+        image: {{ .Values.classifierManager.manager.image.repository }}:{{ .Values.classifierManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
           httpGet:
@@ -491,24 +499,44 @@ spec:
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
-        resources: {{- toYaml .Values.manager.manager.resources | nindent 10 }}
-        securityContext: {{- toYaml .Values.manager.manager.containerSecurityContext |
-          nindent 10 }}
-      - args: {{- toYaml .Values.manager.kubeRbacProxy.args | nindent 8 }}
+        resources: {{- toYaml .Values.classifierManager.manager.resources | nindent 10
+          }}
+        securityContext: {{- toYaml .Values.classifierManager.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.classifierManager.kubeRbacProxy.args | nindent 8 }}
         env:
         - name: KUBERNETES_CLUSTER_DOMAIN
           value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.manager.kubeRbacProxy.image.repository }}:{{ .Values.manager.kubeRbacProxy.image.tag
+        image: {{ .Values.classifierManager.kubeRbacProxy.image.repository }}:{{ .Values.classifierManager.kubeRbacProxy.image.tag
           | default .Chart.AppVersion }}
         name: kube-rbac-proxy
         ports:
         - containerPort: 8443
           name: https
           protocol: TCP
-        resources: {{- toYaml .Values.manager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext: {{- toYaml .Values.manager.kubeRbacProxy.containerSecurityContext
+        resources: {{- toYaml .Values.classifierManager.kubeRbacProxy.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.classifierManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: {{ include "projectsveltos.fullname" . }}-classifier-manager
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 10 
+---
+{{ if .Values.agent.managementCluster }} 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sveltos-agent-manager
+  labels:
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+{{ end }}
+---
+{{ if .Values.agent.managementCluster }} 
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drift-detection-manager
+  labels:
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+{{ end }}
