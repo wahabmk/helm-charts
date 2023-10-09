@@ -33,7 +33,7 @@ accessManager:
         - ALL
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.17.0
+      tag: v0.18.0
     resources:
       limits:
         cpu: 500m
@@ -107,7 +107,7 @@ addonComplianceManager:
         - ALL
     image:
       repository: projectsveltos/addon-compliance-controller-amd64
-      tag: v0.17.0
+      tag: v0.18.0
   replicas: 1
 addonComplianceManagerConfig:
   controllerManagerConfigYaml: |-
@@ -132,7 +132,7 @@ addonComplianceManagerConfig:
     # if you are doing or is intended to do any operation such as perform cleanups
     # after the manager stops then its usage might be unsafe.
     # leaderElectionReleaseOnCancel: true
-addonComplianceMetricsService:
+addonComplianceManagerMetricsService:
   ports:
   - name: https
     port: 8443
@@ -145,7 +145,15 @@ addonController:
     - --health-probe-bind-address=:8081
     - --metrics-bind-address=127.0.0.1:8080
     - --leader-elect
+    - --report-mode=0
     - --v=5
+    argsAgentMgmtCluster:
+    - --health-probe-bind-address=:8081
+    - --metrics-bind-address=127.0.0.1:8080
+    - --leader-elect
+    - --report-mode=0
+    - --agent-in-mgmt-cluster
+    - --v=5    
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -153,7 +161,7 @@ addonController:
         - ALL
     image:
       repository: projectsveltos/addon-controller-amd64
-      tag: v0.17.0
+      tag: v0.18.0
   kubeRbacProxy:
     args:
     - --secure-listen-address=0.0.0.0:8443
@@ -206,6 +214,88 @@ addonControllerMetricsService:
     protocol: TCP
     targetPort: https
   type: ClusterIP
+classifierManager:
+  kubeRbacProxy:
+    args:
+    - --secure-listen-address=0.0.0.0:8443
+    - --upstream=http://127.0.0.1:8080/
+    - --logtostderr=true
+    - --v=0
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    image:
+      repository: gcr.io/kubebuilder/kube-rbac-proxy
+      tag: v0.12.0
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 5m
+        memory: 64Mi
+  manager:
+    args:
+    - --health-probe-bind-address=:8081
+    - --metrics-bind-address=127.0.0.1:8080
+    - --leader-elect
+    - --report-mode=0
+    - --v=5
+    argsAgentMgmtCluster:
+    - --health-probe-bind-address=:8081
+    - --metrics-bind-address=127.0.0.1:8080
+    - --leader-elect
+    - --report-mode=0
+    - --agent-in-mgmt-cluster
+    - --v=5    
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    image:
+      repository: projectsveltos/classifier-amd64
+      tag: v0.18.0
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 500m
+        memory: 128Mi
+  replicas: 1
+classifierManagerConfig:
+  controllerManagerConfigYaml: |-
+    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
+    kind: ControllerManagerConfig
+    health:
+      healthProbeBindAddress: :8081
+    metrics:
+      bindAddress: 127.0.0.1:8080
+    webhook:
+      port: 9443
+    leaderElection:
+      leaderElect: true
+      resourceName: 1aea9208.projectsveltos.io
+    # leaderElectionReleaseOnCancel defines if the leader should step down volume
+    # when the Manager ends. This requires the binary to immediately end when the
+    # Manager is stopped, otherwise, this setting is unsafe. Setting this significantly
+    # speeds up voluntary leader transitions as the new leader don't have to wait
+    # LeaseDuration time first.
+    # In the default scaffold provided, the program ends immediately after
+    # the manager stops, so would be fine to enable this option. However,
+    # if you are doing or is intended to do any operation such as perform cleanups
+    # after the manager stops then its usage might be unsafe.
+    # leaderElectionReleaseOnCancel: true
+classifierManagerMetricsService:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: https
+  type: ClusterIP
 eventManager:
   kubeRbacProxy:
     args:
@@ -241,7 +331,7 @@ eventManager:
         - ALL
     image:
       repository: projectsveltos/event-manager-amd64
-      tag: v0.17.0
+      tag: v0.18.0
     resources:
       limits:
         cpu: 500m
@@ -315,7 +405,7 @@ hcManager:
         - ALL
     image:
       repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.17.0
+      tag: v0.18.0
     resources:
       limits:
         cpu: 500m
@@ -355,81 +445,6 @@ hcManagerMetricsService:
     targetPort: https
   type: ClusterIP
 kubernetesClusterDomain: cluster.local
-manager:
-  kubeRbacProxy:
-    args:
-    - --secure-listen-address=0.0.0.0:8443
-    - --upstream=http://127.0.0.1:8080/
-    - --logtostderr=true
-    - --v=0
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-        - ALL
-    image:
-      repository: gcr.io/kubebuilder/kube-rbac-proxy
-      tag: v0.12.0
-    resources:
-      limits:
-        cpu: 500m
-        memory: 128Mi
-      requests:
-        cpu: 5m
-        memory: 64Mi
-  manager:
-    args:
-    - --health-probe-bind-address=:8081
-    - --metrics-bind-address=127.0.0.1:8080
-    - --leader-elect
-    - --report-mode=0
-    - --v=5
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      capabilities:
-        drop:
-        - ALL
-    image:
-      repository: projectsveltos/classifier-amd64
-      tag: v0.17.0
-    resources:
-      limits:
-        cpu: 500m
-        memory: 128Mi
-      requests:
-        cpu: 500m
-        memory: 128Mi
-  replicas: 1
-managerConfig:
-  controllerManagerConfigYaml: |-
-    apiVersion: controller-runtime.sigs.k8s.io/v1alpha1
-    kind: ControllerManagerConfig
-    health:
-      healthProbeBindAddress: :8081
-    metrics:
-      bindAddress: 127.0.0.1:8080
-    webhook:
-      port: 9443
-    leaderElection:
-      leaderElect: true
-      resourceName: 1aea9208.projectsveltos.io
-    # leaderElectionReleaseOnCancel defines if the leader should step down volume
-    # when the Manager ends. This requires the binary to immediately end when the
-    # Manager is stopped, otherwise, this setting is unsafe. Setting this significantly
-    # speeds up voluntary leader transitions as the new leader don't have to wait
-    # LeaseDuration time first.
-    # In the default scaffold provided, the program ends immediately after
-    # the manager stops, so would be fine to enable this option. However,
-    # if you are doing or is intended to do any operation such as perform cleanups
-    # after the manager stops then its usage might be unsafe.
-    # leaderElectionReleaseOnCancel: true
-managerMetricsService:
-  ports:
-  - name: https
-    port: 8443
-    protocol: TCP
-    targetPort: https
-  type: ClusterIP
 scManager:
   kubeRbacProxy:
     args:
@@ -464,7 +479,7 @@ scManager:
         - ALL
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.17.0
+      tag: v0.18.0
     resources:
       limits:
         cpu: 500m
@@ -505,3 +520,5 @@ scManagerMetricsService:
   type: ClusterIP
 prometheus:
   enabled: false
+agent:
+  managementCluster: false
