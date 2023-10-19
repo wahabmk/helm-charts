@@ -532,7 +532,7 @@ metadata:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 {{ end }}
 ---
-{{ if .Values.agent.managementCluster }} 
+{{ if .Values.agent.managementCluster }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
