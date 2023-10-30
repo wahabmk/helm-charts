@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-role
+  name: classifier-manager-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
@@ -132,14 +132,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-rolebinding
+  name: classifier-manager-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-classifier-manager-role'
+  name: 'classifier-manager-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-classifier-manager'
+  name: 'classifier-manager'
   namespace: '{{ .Release.Namespace }}'

@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-event-proxy-role
+  name: event-proxy-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
@@ -21,14 +21,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-event-proxy-rolebinding
+  name: event-proxy-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-event-proxy-role'
+  name: 'event-proxy-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-event-manager'
+  name: 'event-manager'
   namespace: '{{ .Release.Namespace }}'

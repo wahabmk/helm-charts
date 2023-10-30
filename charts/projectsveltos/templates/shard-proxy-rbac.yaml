@@ -1,9 +1,11 @@
-{{ if .Values.agent.managementCluster }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-drift-detection-proxy-role
+  name: shard-proxy-role
   labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: shard-controller
+    app.kubernetes.io/part-of: shard-controller
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
 - apiGroups:
@@ -22,15 +24,17 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-drift-detection-proxy-rolebinding
+  name: shard-proxy-rolebinding
   labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: shard-controller
+    app.kubernetes.io/part-of: shard-controller
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-drift-detection-proxy-role'
+  name: 'shard-proxy-role'
 subjects:
 - kind: ServiceAccount
-  name: 'drift-detection-manager'
+  name: 'shard-controller'
   namespace: '{{ .Release.Namespace }}'
-{{ end }}

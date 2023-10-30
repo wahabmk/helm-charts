@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
+  name: addon-compliance-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
+  name: addon-compliance-manager
   labels:
     control-plane: addon-compliance-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -69,20 +69,20 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-compliance-manager
+      serviceAccountName: addon-compliance-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller
+  name: addon-controller
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller
+  name: addon-controller
   labels:
     control-plane: addon-controller
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -149,7 +149,7 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-addon-controller
+      serviceAccountName: addon-controller
       terminationGracePeriodSeconds: 10
       volumes:
       - emptyDir: {}
@@ -158,14 +158,14 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-access-manager
+  name: access-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-access-manager
+  name: access-manager
   labels:
     control-plane: access-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -225,20 +225,20 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-access-manager
+      serviceAccountName: access-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-sc-manager
+  name: sc-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-sc-manager
+  name: sc-manager
   labels:
     control-plane: sc-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -297,20 +297,20 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-sc-manager
+      serviceAccountName: sc-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-hc-manager
+  name: hc-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-hc-manager
+  name: hc-manager
   labels:
     control-plane: hc-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -369,20 +369,20 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-hc-manager
+      serviceAccountName: hc-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-event-manager
+  name: event-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-event-manager
+  name: event-manager
   labels:
     control-plane: event-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -442,20 +442,20 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-event-manager
+      serviceAccountName: event-manager
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
+  name: classifier-manager
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager
+  name: classifier-manager
   labels:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
@@ -520,7 +520,7 @@ spec:
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ include "projectsveltos.fullname" . }}-classifier-manager
+      serviceAccountName: classifier-manager
       terminationGracePeriodSeconds: 10
 ---
 {{ if .Values.agent.managementCluster }}
@@ -540,3 +540,83 @@ metadata:
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 {{ end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shard-controller
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: shard-controller
+    app.kubernetes.io/part-of: shard-controller
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shard-controller
+  labels:
+    control-plane: shard-controller
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.shardController.replicas }}
+  selector:
+    matchLabels:
+      control-plane: shard-controller
+    {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        control-plane: shard-controller
+      {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+    spec:
+      containers:
+{{ if .Values.agent.managementCluster }}
+      - args: {{- toYaml .Values.shardController.manager.argsAgentMgmtCluster | nindent 8 }}
+{{ else }}
+      - args: {{- toYaml .Values.shardController.manager.args | nindent 8 }}
+{{ end }}
+        command:
+        - /manager
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.shardController.manager.image.repository }}:{{ .Values.shardController.manager.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: manager
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources: {{- toYaml .Values.shardController.manager.resources | nindent 10 }}
+        securityContext: {{- toYaml .Values.shardController.manager.containerSecurityContext
+          | nindent 10 }}
+      - args: {{- toYaml .Values.shardController.kubeRbacProxy.args | nindent 8 }}
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.shardController.kubeRbacProxy.image.repository }}:{{ .Values.shardController.kubeRbacProxy.image.tag
+          | default .Chart.AppVersion }}
+        name: kube-rbac-proxy
+        ports:
+        - containerPort: 8443
+          name: https
+          protocol: TCP
+        resources: {{- toYaml .Values.shardController.kubeRbacProxy.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.shardController.kubeRbacProxy.containerSecurityContext
+          | nindent 10 }}
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: shard-controller
+      terminationGracePeriodSeconds: 10

@@ -1,7 +1,7 @@
 apiVersion: lib.projectsveltos.io/v1alpha1
 kind: Classifier
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-default-classifier
+  name: default-classifier
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
   annotations:

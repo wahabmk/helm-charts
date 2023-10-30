@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-hc-manager-metrics-service
+  name: hc-manager-metrics-service
   labels:
     control-plane: hc-manager
   {{- include "projectsveltos.labels" . | nindent 4 }}
