@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-sveltos-agent-metrics-reader
+  name: sveltos-agent-metrics-reader
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:

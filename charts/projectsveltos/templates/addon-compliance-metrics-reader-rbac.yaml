@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-compliance-metrics-reader
+  name: addon-compliance-metrics-reader
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:

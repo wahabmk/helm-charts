@@ -1,7 +1,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller-role
+  name: addon-controller-role
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 rules:
@@ -284,14 +284,14 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-addon-controller-rolebinding
+  name: addon-controller-rolebinding
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: '{{ include "projectsveltos.fullname" . }}-addon-controller-role'
+  name: 'addon-controller-role'
 subjects:
 - kind: ServiceAccount
-  name: '{{ include "projectsveltos.fullname" . }}-addon-controller'
+  name: 'addon-controller'
   namespace: '{{ .Release.Namespace }}'

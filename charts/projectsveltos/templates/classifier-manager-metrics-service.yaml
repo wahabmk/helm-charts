@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "projectsveltos.fullname" . }}-classifier-manager-metrics-service
+  name: classifier-manager-metrics-service
   labels:
     control-plane: classifier
   {{- include "projectsveltos.labels" . | nindent 4 }}
