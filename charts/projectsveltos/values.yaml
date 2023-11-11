@@ -41,6 +41,7 @@ accessManager:
         cpu: 10m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 accessManagerMetricsService:
   ports:
   - name: https
@@ -84,6 +85,7 @@ addonComplianceManager:
       repository: projectsveltos/addon-compliance-controller-amd64
       tag: v0.19.0
   replicas: 1
+  tolerations: []
 addonComplianceManagerMetricsService:
   ports:
   - name: https
@@ -136,6 +138,7 @@ addonController:
         cpu: 5m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 addonControllerMetricsService:
   ports:
   - name: https
@@ -195,6 +198,7 @@ classifierManager:
         cpu: 500m
         memory: 128Mi
   replicas: 1
+  tolerations: []
 classifierManagerMetricsService:
   ports:
   - name: https
@@ -246,6 +250,7 @@ eventManager:
         cpu: 10m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 eventManagerMetricsService:
   ports:
   - name: https
@@ -297,6 +302,7 @@ hcManager:
         cpu: 10m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 hcManagerMetricsService:
   ports:
   - name: https
@@ -349,6 +355,7 @@ scManager:
         cpu: 10m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 scManagerMetricsService:
   ports:
   - name: https
@@ -406,6 +413,7 @@ shardController:
         cpu: 10m
         memory: 64Mi
   replicas: 1
+  tolerations: []
 shardControllerMetricsService:
   ports:
   - name: https
