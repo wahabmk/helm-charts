@@ -40,6 +40,7 @@ accessManager:
       requests:
         cpu: 10m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 accessManagerMetricsService:
@@ -84,6 +85,7 @@ addonComplianceManager:
     image:
       repository: projectsveltos/addon-compliance-controller-amd64
       tag: v0.19.0
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 addonComplianceManagerMetricsService:
@@ -137,6 +139,7 @@ addonController:
       requests:
         cpu: 5m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 addonControllerMetricsService:
@@ -197,6 +200,7 @@ classifierManager:
       requests:
         cpu: 500m
         memory: 128Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 classifierManagerMetricsService:
@@ -249,6 +253,7 @@ eventManager:
       requests:
         cpu: 10m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 eventManagerMetricsService:
@@ -301,6 +306,7 @@ hcManager:
       requests:
         cpu: 10m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 hcManagerMetricsService:
@@ -354,6 +360,7 @@ scManager:
       requests:
         cpu: 10m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 scManagerMetricsService:
@@ -412,6 +419,7 @@ shardController:
       requests:
         cpu: 10m
         memory: 64Mi
+  nodeSelector: {}
   replicas: 1
   tolerations: []
 shardControllerMetricsService:
