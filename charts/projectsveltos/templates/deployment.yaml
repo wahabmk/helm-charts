@@ -440,11 +440,11 @@ spec:
       annotations:
         kubectl.kubernetes.io/default-container: manager
     spec:
-      {{- with .Values.hcManager.tolerations }}
+      {{- with .Values.eventManager.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.hcManager.nodeSelector }}
+      {{- with .Values.eventManager.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
