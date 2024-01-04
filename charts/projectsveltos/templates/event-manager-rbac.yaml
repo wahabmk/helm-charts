@@ -89,32 +89,6 @@ rules:
 - apiGroups:
   - lib.projectsveltos.io
   resources:
-  - eventbasedaddons
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - eventbasedaddons/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
-  - eventbasedaddons/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - lib.projectsveltos.io
-  resources:
   - eventreports
   verbs:
   - create
@@ -131,6 +105,32 @@ rules:
   - get
   - list
   - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventtriggers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventtriggers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - lib.projectsveltos.io
+  resources:
+  - eventtriggers/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - lib.projectsveltos.io
   resources:
