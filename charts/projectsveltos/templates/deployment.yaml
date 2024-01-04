@@ -106,7 +106,7 @@ spec:
         control-plane: addon-controller
       {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
       annotations:
-        kubectl.kubernetes.io/default-container: manager
+        kubectl.kubernetes.io/default-container: controller
     spec:
       {{- with .Values.addonController.tolerations }}
       tolerations:
