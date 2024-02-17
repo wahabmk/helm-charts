@@ -32,7 +32,7 @@ accessManager:
         - ALL
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
@@ -65,7 +65,7 @@ addonController:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.23.0
+    - --version=v0.24.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -73,7 +73,7 @@ addonController:
         - ALL
     image:
       repository: projectsveltos/addon-controller-amd64
-      tag: v0.23.0
+      tag: v0.24.0
   kubeRbacProxy:
     args:
     - --secure-listen-address=0.0.0.0:8443
@@ -141,7 +141,7 @@ classifierManager:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.23.0
+    - --version=v0.24.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -149,7 +149,7 @@ classifierManager:
         - ALL
     image:
       repository: projectsveltos/classifier-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
@@ -202,7 +202,7 @@ eventManager:
         - ALL
     image:
       repository: projectsveltos/event-manager-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
@@ -255,7 +255,7 @@ hcManager:
         - ALL
     image:
       repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
@@ -309,7 +309,7 @@ scManager:
         - ALL
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
@@ -368,7 +368,7 @@ shardController:
         - ALL
     image:
       repository: projectsveltos/shard-controller-amd64
-      tag: v0.23.0
+      tag: v0.24.0
     resources:
       limits:
         cpu: 500m
