@@ -48,16 +48,27 @@ spec:
         image: {{ .Values.addonController.controller.image.repository }}:{{ .Values.addonController.controller.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: controller
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {}
@@ -66,21 +77,6 @@ spec:
         volumeMounts:
         - mountPath: /tmp
           name: tmp
-      - args: {{- toYaml .Values.addonController.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.addonController.kubeRbacProxy.image.repository }}:{{ .Values.addonController.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.addonController.kubeRbacProxy.resources | nindent
-          10 }}
-        securityContext: {{- toYaml .Values.addonController.kubeRbacProxy.containerSecurityContext
-          | nindent 10 }}
       securityContext:
         runAsNonRoot: true
       serviceAccountName: addon-controller
@@ -135,35 +131,31 @@ spec:
         image: {{ .Values.accessManager.manager.image.repository }}:{{ .Values.accessManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.accessManager.manager.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.accessManager.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.accessManager.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.accessManager.kubeRbacProxy.image.repository }}:{{ .Values.accessManager.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.accessManager.kubeRbacProxy.resources | nindent 10
-          }}
-        securityContext: {{- toYaml .Values.accessManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
@@ -216,34 +208,31 @@ spec:
         image: {{ .Values.scManager.manager.image.repository }}:{{ .Values.scManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.scManager.manager.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.scManager.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.scManager.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.scManager.kubeRbacProxy.image.repository }}:{{ .Values.scManager.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.scManager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext: {{- toYaml .Values.scManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
@@ -296,34 +285,31 @@ spec:
         image: {{ .Values.hcManager.manager.image.repository }}:{{ .Values.hcManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.hcManager.manager.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.hcManager.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.hcManager.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.hcManager.kubeRbacProxy.image.repository }}:{{ .Values.hcManager.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.hcManager.kubeRbacProxy.resources | nindent 10 }}
-        securityContext: {{- toYaml .Values.hcManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
@@ -376,35 +362,31 @@ spec:
         image: {{ .Values.eventManager.manager.image.repository }}:{{ .Values.eventManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.eventManager.manager.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.eventManager.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.eventManager.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.eventManager.kubeRbacProxy.image.repository }}:{{ .Values.eventManager.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.eventManager.kubeRbacProxy.resources | nindent 10
-          }}
-        securityContext: {{- toYaml .Values.eventManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
@@ -461,36 +443,32 @@ spec:
         image: {{ .Values.classifierManager.manager.image.repository }}:{{ .Values.classifierManager.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.classifierManager.manager.resources | nindent 10
           }}
         securityContext: {{- toYaml .Values.classifierManager.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.classifierManager.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.classifierManager.kubeRbacProxy.image.repository }}:{{ .Values.classifierManager.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.classifierManager.kubeRbacProxy.resources | nindent
-          10 }}
-        securityContext: {{- toYaml .Values.classifierManager.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
@@ -568,35 +546,31 @@ spec:
         image: {{ .Values.shardController.manager.image.repository }}:{{ .Values.shardController.manager.image.tag
           | default .Chart.AppVersion }}
         livenessProbe:
+          failureThreshold: 3
           httpGet:
             path: /healthz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 20
         name: manager
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /readyz
-            port: 8081
+            port: healthz
+            scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
         resources: {{- toYaml .Values.shardController.manager.resources | nindent 10 }}
         securityContext: {{- toYaml .Values.shardController.manager.containerSecurityContext
-          | nindent 10 }}
-      - args: {{- toYaml .Values.shardController.kubeRbacProxy.args | nindent 8 }}
-        env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
-        image: {{ .Values.shardController.kubeRbacProxy.image.repository }}:{{ .Values.shardController.kubeRbacProxy.image.tag
-          | default .Chart.AppVersion }}
-        name: kube-rbac-proxy
-        ports:
-        - containerPort: 8443
-          name: https
-          protocol: TCP
-        resources: {{- toYaml .Values.shardController.kubeRbacProxy.resources | nindent
-          10 }}
-        securityContext: {{- toYaml .Values.shardController.kubeRbacProxy.containerSecurityContext
           | nindent 10 }}
       securityContext:
         runAsNonRoot: true
