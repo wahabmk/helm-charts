@@ -5,7 +5,9 @@ Helm's [documentation](https://helm.sh/docs) to get started.
 
 Once Helm has been set up correctly, add the repo as follows:
 
-  helm repo add projectsveltos https://projectsveltos.github.io/helm-charts
+```bash
+helm repo add projectsveltos https://projectsveltos.github.io/helm-charts
+```
 
 If you had already added this repo earlier, run `helm repo update` to retrieve
 the latest versions of the packages.  You can then run `helm search repo
@@ -14,14 +16,18 @@ projectsveltos` to see the charts.
 To install the projectsveltos chart:
 
 ```bash
-kubectl create namespace projectsveltos
-helm install projectsveltos projectsveltos/projectsveltos -n projectsveltos
+helm install projectsveltos projectsveltos/projectsveltos \
+  --create-namespace -n projectsveltos
 ```
+
+By default, the chart will install in agent-mode. To install in agentless-mode add the option: `--set agent.managementCluster=true` to the above command.
+
+Additionally you can set other parameters that are defined in the [values.yaml](./charts/projectsveltos/values.yaml) file.
 
 To uninstall the chart:
 
 ```bash
-helm delete projectsveltos
+helm delete projectsveltos -n projectsveltos
 ```
 
 # What is the Projectsveltos?
