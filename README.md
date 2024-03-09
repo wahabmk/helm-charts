@@ -20,9 +20,9 @@ helm install projectsveltos projectsveltos/projectsveltos \
   --create-namespace -n projectsveltos
 ```
 
-By default, the chart will install in agent-mode. To install in agentless-mode add the option: `--set agent.managementCluster=true` to the above command.
+By default the chart will install in agent mode. To install in agentless mode, add the argument: `--set agent.managementCluster=true` to the above command.
 
-Additionally you can set other parameters that are defined in the [values.yaml](./charts/projectsveltos/values.yaml) file.
+Additionally you can set more parameters that are defined in the [values.yaml](./charts/projectsveltos/values.yaml) file.
 
 To uninstall the chart:
 
