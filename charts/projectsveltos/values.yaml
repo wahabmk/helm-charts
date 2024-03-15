@@ -10,14 +10,14 @@ accessManager:
         - ALL
     image:
       repository: projectsveltos/access-manager-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -35,7 +35,7 @@ addonController:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.25.0
+    - --version=v0.26.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -43,7 +43,7 @@ addonController:
         - ALL
     image:
       repository: projectsveltos/addon-controller-amd64
-      tag: v0.25.0
+      tag: v0.26.0
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -61,7 +61,7 @@ classifierManager:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.25.0
+    - --version=v0.26.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -69,13 +69,13 @@ classifierManager:
         - ALL
     image:
       repository: projectsveltos/classifier-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
-        cpu: 500m
+        cpu: 100m
         memory: 128Mi
   nodeSelector: {}
   replicas: 1
@@ -93,14 +93,14 @@ eventManager:
         - ALL
     image:
       repository: projectsveltos/event-manager-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -117,14 +117,14 @@ hcManager:
         - ALL
     image:
       repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -142,14 +142,14 @@ scManager:
         - ALL
     image:
       repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -171,14 +171,14 @@ shardController:
         - ALL
     image:
       repository: projectsveltos/shard-controller-amd64
-      tag: v0.25.0
+      tag: v0.26.0
     resources:
       limits:
         cpu: 500m
-        memory: 128Mi
+        memory: 256Mi
       requests:
         cpu: 10m
-        memory: 64Mi
+        memory: 128Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
