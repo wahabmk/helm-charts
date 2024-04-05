@@ -9,8 +9,8 @@ accessManager:
         drop:
         - ALL
     image:
-      repository: projectsveltos/access-manager-amd64
-      tag: v0.26.0
+      repository: projectsveltos/access-manager
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m
@@ -35,15 +35,18 @@ addonController:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.26.0
+    - --version=v0.27.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
         - ALL
     image:
-      repository: projectsveltos/addon-controller-amd64
-      tag: v0.26.0
+      repository: projectsveltos/addon-controller
+      tag: v0.27.0
+    resources:
+      requests:
+        memory: 256Mi
   nodeSelector: {}
   replicas: 1
   tolerations: []
@@ -61,15 +64,15 @@ classifierManager:
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.26.0
+    - --version=v0.27.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
         drop:
         - ALL
     image:
-      repository: projectsveltos/classifier-amd64
-      tag: v0.26.0
+      repository: projectsveltos/classifier
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m
@@ -92,8 +95,8 @@ eventManager:
         drop:
         - ALL
     image:
-      repository: projectsveltos/event-manager-amd64
-      tag: v0.26.0
+      repository: projectsveltos/event-manager
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m
@@ -116,8 +119,8 @@ hcManager:
         drop:
         - ALL
     image:
-      repository: projectsveltos/healthcheck-manager-amd64
-      tag: v0.26.0
+      repository: projectsveltos/healthcheck-manager
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m
@@ -141,8 +144,8 @@ scManager:
         drop:
         - ALL
     image:
-      repository: projectsveltos/sveltoscluster-manager-amd64
-      tag: v0.26.0
+      repository: projectsveltos/sveltoscluster-manager
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m
@@ -170,8 +173,8 @@ shardController:
         drop:
         - ALL
     image:
-      repository: projectsveltos/shard-controller-amd64
-      tag: v0.26.0
+      repository: projectsveltos/shard-controller
+      tag: v0.27.0
     resources:
       limits:
         cpu: 500m

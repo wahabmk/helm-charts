@@ -71,7 +71,8 @@ spec:
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
-        resources: {}
+        resources: {{- toYaml .Values.addonController.controller.resources | nindent 10
+          }}
         securityContext: {{- toYaml .Values.addonController.controller.containerSecurityContext
           | nindent 10 }}
         volumeMounts:
