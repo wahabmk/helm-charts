@@ -26,3 +26,4 @@ spec:
           | nindent 10 }}
       restartPolicy: Never
       serviceAccountName: register-mgmt-cluster
+  ttlSecondsAfterFinished: 360

@@ -10,7 +10,7 @@ accessManager:
         - ALL
     image:
       repository: projectsveltos/access-manager
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
@@ -28,14 +28,14 @@ addonController:
     - --report-mode=0
     - --shard-key=
     - --v=5
-    - --version=v0.25.0
+    - --version=v0.32.0
     argsAgentMgmtCluster:
     - --diagnostics-address=:8443
     - --report-mode=0
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.31.0
+    - --version=v0.32.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -43,7 +43,7 @@ addonController:
         - ALL
     image:
       repository: projectsveltos/addon-controller
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       requests:
         memory: 256Mi
@@ -57,14 +57,14 @@ classifierManager:
     - --report-mode=0
     - --shard-key=
     - --v=5
-    - --version=v0.25.0
+    - --version=v0.32.0
     argsAgentMgmtCluster:
     - --diagnostics-address=:8443
     - --report-mode=0
     - --agent-in-mgmt-cluster
     - --shard-key=
     - --v=5
-    - --version=v0.31.0
+    - --version=v0.32.0
     containerSecurityContext:
       allowPrivilegeEscalation: false
       capabilities:
@@ -72,7 +72,7 @@ classifierManager:
         - ALL
     image:
       repository: projectsveltos/classifier
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
@@ -96,7 +96,7 @@ eventManager:
         - ALL
     image:
       repository: projectsveltos/event-manager
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
@@ -120,7 +120,7 @@ hcManager:
         - ALL
     image:
       repository: projectsveltos/healthcheck-manager
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
@@ -144,7 +144,7 @@ registerMgmtClusterJob:
         - ALL
     image:
       repository: projectsveltos/register-mgmt-cluster
-      tag: v0.31.0
+      tag: v0.32.0
     imagePullPolicy: IfNotPresent
     resources:
       requests:
@@ -162,7 +162,7 @@ scManager:
         - ALL
     image:
       repository: projectsveltos/sveltoscluster-manager
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
@@ -191,7 +191,7 @@ shardController:
         - ALL
     image:
       repository: projectsveltos/shard-controller
-      tag: v0.31.0
+      tag: v0.32.0
     resources:
       limits:
         cpu: 500m
