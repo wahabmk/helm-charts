@@ -584,3 +584,75 @@ metadata:
   name: register-mgmt-cluster
   labels:
   {{- include "projectsveltos.labels" . | nindent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conversion-webhook
+  labels:
+    app: sveltos-webhook
+  {{- include "projectsveltos.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.conversionWebhook.replicas }}
+  selector:
+    matchLabels:
+      app: sveltos-webhook
+    {{- include "projectsveltos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: sveltos-webhook
+      {{- include "projectsveltos.selectorLabels" . | nindent 8 }}
+      annotations:
+        kubectl.kubernetes.io/default-container: sveltos-webhook
+    spec:
+      containers:
+      - command:
+        - /conversion-webhook
+        env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: {{ .Values.conversionWebhook.sveltosWebhook.image.repository }}:{{ .Values.conversionWebhook.sveltosWebhook.image.tag
+          | default .Chart.AppVersion }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: healthz
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        name: sveltos-webhook
+        ports:
+        - containerPort: 9443
+          name: webhook-server
+          protocol: TCP
+        - containerPort: 9440
+          name: healthz
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /readyz
+            port: healthz
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        resources: {{- toYaml .Values.conversionWebhook.sveltosWebhook.resources | nindent
+          10 }}
+        securityContext: {{- toYaml .Values.conversionWebhook.sveltosWebhook.containerSecurityContext
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /tmp/k8s-webhook-server/serving-certs
+          name: cert
+          readOnly: true
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 10
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: webhook-server-cert
+
